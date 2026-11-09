@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "pack_format": 71,
+    "description": "TinyLisp integer interpreter (Java 1.21.5)"
+  }
+}

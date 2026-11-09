@@ -1,0 +1,10 @@
+- 源码长度上限 512 字符、递归函数栈帧上限 64、每次 run 最多 4000 次内部封装函数调用。达到限制返回 ERR。长 token 的扫描和 gc 也会消耗游戏命令预算。
+- Minecraft 自身的函数命令预算仍然有效：复杂程序可能先触及 maxCommandChainLength，导致游戏提前中断，不能保证解释器自行输出 ERR。发生中断时执行 `tinylisp:reset` 恢复状态。此实现适合短程序验证；NBT 查找、复制、宏调用和递归开销很大，不是高性能 Lisp VM。
+
+在1.21.11+中，考虑使用
+/gamerule max_command_sequence_length 2147483647
+/gamerule max_command_forks 2147483647
+
+源码长度可以不做限制，考虑若单tick运行超过#max_tick_run（计分板虚拟玩家）次数的函数则使用schedule function <name> 1t延迟到下一个tick，若运行超过#max_run（计分板虚拟玩家）次数函数调用则抛出TooLong的ERR
+
+2. 细分不同err，同时编译期做到指出具体string的下标
